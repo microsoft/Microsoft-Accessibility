@@ -1,0 +1,114 @@
+# yaml-language-server: $schema=persona.schema.json
+
+clause: "4.2.7"
+title: "Usage with limited manipulation or strength"
+alias: keyboard-only
+status: elaborated
+fps_statement: "Where ICT requires manual actions, the ICT provides features that enable users to make use of the ICT through alternative actions not requiring manipulation, pinching, or twisting of the wrist, or simultaneous actions."
+device_context: desktop
+baseline_excludes: [mouse-pointer-interaction, touch-pointer-interaction]
+
+prompt:
+  role: "A person with limited hand and arm dexterity who can see the screen but operates entirely by keyboard because they cannot use a mouse, trackpad, or touchscreen."
+  blocked_input: [mouse, trackpad, touchscreen]
+  user_types:
+    - "Limited fine motor control - types slowly, may miskey, and tremor may cause repeated or adjacent keypresses"
+    - "One-handed keyboard user - cannot perform simultaneous key combinations"
+  checklist:
+    - "Reachability: Can Tab/Shift+Tab reach every interactive element?"
+    - "Focus: Is the focus indicator always clearly visible?"
+    - "Widget patterns: Do custom widgets support arrows, Enter, Space, and Escape?"
+    - "Keyboard traps: Can the user escape modals and widgets that capture Tab?"
+    - "Keystroke cost: How many Tab stops reach the primary action, and can repetitive navigation be bypassed?"
+    - "Pointer-only actions: Do hover, drag-and-drop, right-click, and click-and-hold have keyboard alternatives?"
+    - "Simultaneous keys: Do any interactions require difficult simultaneous keypresses?"
+    - "Time limits: Do auto-closing or expiring interactions disadvantage slow typists?"
+    - "Accidental activation: Are destructive actions reversible or confirmed?"
+
+assistive_tech:
+  - id: standard-keyboard-no-mouse
+    category: keyboard
+    platforms: [Windows, macOS, Linux]
+    model: "Tab/Shift+Tab moves among controls; Enter/Space activates; arrows navigate composite widgets; Escape closes menus and modals. The user sees the screen but cannot use a mouse, trackpad, or touchscreen."
+
+strategies:
+  - id: tab-through-interactive-elements
+    mechanisms: [tab, shift-tab]
+    behavior: "On simple pages, Tab/Shift+Tab discovers controls within content. In rich interaction interfaces, F6/Ctrl+F6 region navigation and application shortcuts are primary; Tab may intentionally stay within the current region."
+    reqs: "Controls must be keyboard focusable with logical tab order and visible focus. Simple pages need bypass paths; rich interfaces need documented region navigation and shortcuts."
+  - id: focus-indicator-tracking
+    mechanisms: [visible-focus-ring, outline]
+    behavior: "Relies entirely on visible focus to know where the next keypress acts; invisible, dim, lost, or fully obscured focus strands the user."
+    reqs: "Focus must always be clearly visible, sufficiently large, and strongly contrasting. Custom focus must not be less visible than the browser default or suppressed without a clear replacement."
+  - id: focused-element-remains-visible
+    mechanisms: [visible-focus-ring, outline, page-scroll]
+    behavior: "Tracks only focused controls that remain visible; sticky chrome, banners, and non-modal overlays can hide the active control and erase the user's place."
+    reqs: "At least part of every focused control must remain visible. Focus scrolling must account for fixed headers, footers, banners, and overlays."
+  - id: arrow-key-navigation-within-widgets
+    mechanisms: [arrow-keys, home, end]
+    behavior: "Uses arrows within tabs, menus, radio groups, date pickers, sliders, and other composite widgets; missing patterns can trap the user or hide options."
+    reqs: "Composite widgets must implement standard patterns: arrows navigate, Enter/Space selects, Escape closes, and internal focus moves without adding every option to the Tab sequence."
+  - id: keyboard-shortcuts-and-access-keys
+    mechanisms: [access-keys, application-shortcuts]
+    behavior: "Uses access keys (Alt+key on Windows, Ctrl+Option+key on macOS) and application shortcuts such as ? for help or / for search, but simultaneous combinations can disadvantage limited dexterity."
+    reqs: "Shortcuts must be discoverable and avoid browser or OS conflicts. Single-character shortcuts can be disabled, remapped with a modifier, or scoped to a focused component so stray keys do not disrupt the flow."
+  - id: application-specific-keyboard-shortcuts
+    mechanisms: [application-shortcuts, keyboard-shortcuts-dialog]
+    behavior: "In rich interaction interfaces, application shortcuts and region navigation are the primary command model, not supplementary accelerators. Users learn them through product documentation, help menus, and keyboard-accessible shortcut dialogs."
+    reqs: "Shortcuts should be documented in-product and should be learnable through consistent mnemonic patterns. Help dialogs must be keyboard accessible."
+  - id: page-structure-scanning-visual
+    mechanisms: [visual-scanning, tab, shortcuts]
+    behavior: "Sees the layout and target but must reach it; visually prominent controls deep in DOM order impose long, tiring key sequences."
+    reqs: "Important actions should be reachable in reasonable Tab stops. Logical DOM order, skip links, and region shortcuts reduce tabbing."
+
+user_variants:
+  - id: limited-fine-motor-control
+    behavior: "Can use a standard keyboard but types slowly and may miskey; tremor can produce repeated or adjacent keypresses. Forgiving, reversible interactions reduce risk from imprecise input."
+    uses_at: [standard-keyboard-no-mouse]
+    uses_strategies: [tab-through-interactive-elements, focus-indicator-tracking, arrow-key-navigation-within-widgets]
+    expects:
+      - "Every interactive element is keyboard reachable and operable"
+      - "Focus is always clearly visible"
+      - "No keyboard traps; Escape provides a way out"
+      - "No irreversible action on one keypress without confirmation"
+      - "Tolerance for repeated or bounced keypresses"
+      - "Clear undo for accidental actions"
+      - "Reasonable time limits or an option to extend or disable them"
+  - id: one-handed-keyboard-user
+    behavior: "Uses one hand and cannot perform simultaneous combinations such as Ctrl+Shift+T without Sticky Keys or similar OS support; sequential keypresses remain possible."
+    uses_at: [standard-keyboard-no-mouse]
+    uses_strategies: [tab-through-interactive-elements, keyboard-shortcuts-and-access-keys]
+    expects:
+      - "Critical actions do not require simultaneous modifier keys"
+      - "Sticky Keys modifier state causes no interaction problems"
+      - "Shortcuts can be performed with one hand on either side of the keyboard"
+      - "Tab paths do not require excessive keypresses"
+      - "Drag-and-drop and click-and-drag have keyboard alternatives"
+
+learning:
+  - id: first-visit-keyboard-model
+    facts: "On simple pages, users learn tab order and widget keys; in rich interfaces they learn F6/Ctrl+F6 regions and seek a Shift+? or Help shortcuts dialog. A coherent keyboard model reduces trial and error."
+  - id: rich-interface-shortcut-first-model
+    facts: "Desktop and complex web applications use shortcuts and F6/Ctrl+F6 region navigation as primary movement between major areas; Tab stays within regions. Evaluate documentation and discoverability, not whether Tab alone reaches every area."
+  - id: efficiency-over-discovery
+    facts: "The user can see content; the barrier is reaching and operating it efficiently. Every unnecessary Tab stop, missing bypass, and trap adds physical effort and fatigue."
+  - id: keystroke-economy
+    facts: "Each keypress can carry physical cost; 30 Tab presses to a primary action may cause pain or exhaustion. Common tasks should minimize keystrokes."
+  - id: error-recovery-critical
+    facts: "Tremor and limited control make accidental activation more common. Confirmation and undo are essential when delete, submit, or navigation actions would otherwise be irreversible."
+  - id: fatigue-across-sessions
+    facts: "Motor fatigue can worsen over time; an interface manageable initially may become difficult after 20 minutes. Efficient operation helps users finish before fatigue escalates."
+  - id: hover-content-on-focus
+    facts: "Tooltips, labels, expanded controls, and all information shown on hover must also appear on keyboard focus. Hover-only content is invisible to keyboard-only users."
+
+heuristic_overrides:
+  1: "Show visible feedback near the action: persistent focus, loading state, and confirmation that a keypress worked. After activation, focus should move predictably to relevant new content rather than leave the result ambiguous."
+  2: "Visual appearance and keyboard behavior must match standard controls. Buttons use Enter/Space; composite widgets use expected arrows and Escape; icon-only controls need visible meaning."
+  3: "Escape must close modals, keyboard-accessible controls must cancel or undo, and overlays must return focus to their trigger. Focus traps without an exit strand the user."
+  4: "Use consistent standard keyboard patterns for dialogs, trees, menus, tabs, comboboxes, and other composites. Keep focus styling and navigation rules consistent across pages."
+  5: "Give constraints before input and prevent accidental Enter submission. Destructive confirmations must be keyboard accessible, and required fields must be visibly indicated."
+  6: "Keep labels persistent and controls visibly grouped so operation does not depend on recall. Skip links and structural navigation reduce repeated traversal; placeholders must not replace labels."
+  7: "Offer skip links, shortcuts, region navigation, and efficient tab order without browser or OS conflicts. Document shortcuts and minimize keystroke cost because long paths cause physical fatigue."
+  8: "Remove decorative and redundant items from the tab order. Every unnecessary focus stop adds physical effort, so keep the keyboard path to primary actions short."
+  9: "Place errors beside their fields and move focus to an error summary or errored field without hiding it offscreen. Recovery must preserve context and remain entirely keyboard operable."
+  10: "Help, widget instructions, and shortcut docs must be keyboard accessible; dialogs dismiss with Escape and hover tooltips appear on focus. Accessible shortcut docs adequately address discoverability."

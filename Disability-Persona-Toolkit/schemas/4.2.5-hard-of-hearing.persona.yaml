@@ -1,0 +1,110 @@
+# yaml-language-server: $schema=persona.schema.json
+
+clause: "4.2.5"
+title: "Usage with limited hearing"
+alias: "hard-of-hearing"
+status: "elaborated"
+fps_statement: "Where ICT provides auditory modes of operation, the ICT provides enhanced audio features."
+device_context: "all"
+baseline_excludes: []
+
+prompt:
+  role: "A person who can hear some audio but depends on enhanced audio features and visual supplements for reliable perception."
+  blocked_input: []
+  user_types:
+    - "User with assistive hearing devices - Uses hearing aids or a cochlear implant; speech may be intelligible in quiet but degrades with noise, poor quality, or multiple speakers."
+    - "User without assistive hearing devices - Relies on volume controls, enhanced audio settings, mono audio, and captions as the primary supplement."
+  checklist:
+    - "Volume: Verify discoverable controls, audio boost, and adequate range beyond system defaults."
+    - "Background noise: Verify speech separation or enhancement relative to music and noise."
+    - "Captions: Verify optional captions supplement partially heard audio."
+    - "Stereo audio: Verify mono audio for single-sided hearing loss."
+    - "Audio alerts: Verify perceivable frequencies and volumes, including alternatives to high-frequency tones."
+    - "Communication: Verify call quality, volume adjustment, and noise cancellation."
+    - "Visual redundancy: Verify important auditory information also has visual indicators."
+
+assistive_tech:
+  - id: "hearing-aids-and-cochlear-implants"
+    category: "hearing_device"
+    platforms: ["Cross-platform (Bluetooth pairing with Windows, macOS, iOS, Android)"]
+    model: "Hearing aids shape sound to an audiogram; Bluetooth streaming bypasses room acoustics and background noise. Cochlear implants stimulate the auditory nerve; speech is often clearer than music, tonal nuance, or overlapping speakers. Both benefit from clean, separated audio. Telecoil (T-coil) connects hearing loops in venues but is less relevant to screen evaluation."
+  - id: "mono-audio-output"
+    category: "audio_setting"
+    platforms: ["Windows", "macOS", "iOS", "Android"]
+    model: "Mono audio combines stereo channels so users with unilateral or asymmetric hearing loss receive all content regardless of the impaired side. Without it, panned effects, music, or spatially separated speech may be partly or completely missed."
+  - id: "caption-systems-supplementary"
+    category: "captioning"
+    platforms: ["Windows", "macOS", "iOS", "Android", "Web"]
+    model: "System, browser, and meeting captions supplement rather than replace partially heard audio. Users may toggle captions on for noise, poor quality, or unfamiliar accents and off when audio is clear."
+  - id: "enhanced-audio-settings"
+    category: "audio_setting"
+    platforms: ["Windows", "macOS", "iOS", "Android"]
+    model: "System and application controls provide volume boost, equaliser settings, noise cancellation, and dynamic-range compression that raises quiet sounds and softens loud ones. Conferencing noise suppression can significantly improve speech clarity for hearing device users."
+
+strategies:
+  - id: "checking-audio-quality-and-volume-controls"
+    mechanisms: ["hearing-device-processing", "system-volume-controls", "application-audio-settings"]
+    behavior: "Checks volume range, boost, equaliser, noise cancellation, player output, and call-level settings. Compression artifacts, echo, and low bitrate can become worse when amplified by hearing devices."
+    reqs: "Provide discoverable volume controls, clean encoding, call noise suppression, and preferably separate speech and background-music volume. Auto-play should respect system volume and avoid unexpectedly loud or quiet output."
+  - id: "looking-for-captions-as-supplement"
+    mechanisms: ["visual-reading-captions", "hearing-device-processing-audio"]
+    behavior: "Uses optional captions to fill words missed in audio and checks whether their position obscures visual content. Captions are a supplement, not the sole channel."
+    reqs: "Captions should be optional, toggleable, readable, and configurable or positioned clear of critical content. Speaker identification helps when speech is audible but the speaker is unclear."
+  - id: "verifying-visual-redundancy-for-audio-cues"
+    mechanisms: ["visual-scanning", "hearing-device-processing"]
+    behavior: "Checks soft, high-frequency, subtle, and ambient cues for visible backups because sounds may be heard in some conditions and missed in others."
+    reqs: "All audio indicators should have visual equivalents because hearing is unreliable. Pair every important cue with a visible badge, banner, icon change, or other indicator not confined to one screen region."
+  - id: "checking-for-background-noise-separation"
+    mechanisms: ["hearing-device-processing", "audio-settings"]
+    behavior: "Assesses speech against music, effects, environmental noise, and overlapping speakers; checks separate tracks, noise cancellation, and speech-clarity profiles. Hearing devices may otherwise amplify competing background sound with speech."
+    reqs: "Keep speech distinct from background audio; ideally provide separate volume controls or dialogue boost. Calls should suppress background noise at both sending and receiving ends."
+
+user_variants:
+  - id: "user-with-assistive-hearing-device"
+    behavior: "Uses hearing aids or a cochlear implant; direct Bluetooth streaming can make quiet speech intelligible, but noise, poor quality, overlapping speakers, and unfamiliar accents degrade it. Captions supplement difficult listening, while compression artifacts, echo, low bitrate, and high-frequency alerts may remain barriers."
+    uses_at: ["hearing-aids-and-cochlear-implants", "caption-systems-supplementary"]
+    uses_strategies: ["checking-audio-quality-and-volume-controls"]
+    expects:
+      - "Clean, well-encoded audio without heavy compression, echo, or low bitrate."
+      - "Volume controls with adequate loudness."
+      - "Background noise reducible or separable from speech."
+      - "Optional captions for difficult listening conditions."
+      - "Perceivable audio alerts with visual backups."
+      - "Noise cancellation and audio-quality settings for voice and video calls."
+      - "Mono audio for asymmetric hearing loss."
+  - id: "user-without-assistive-hearing-device"
+    behavior: "Does not use hearing aids or cochlear implants and relies on system and application volume boost, equaliser settings, mono audio, and captions as a primary supplement. High volume may expose private content in shared spaces, and visual redundancy is especially important without external amplification."
+    uses_at: ["enhanced-audio-settings", "caption-systems-supplementary", "mono-audio-output"]
+    uses_strategies: ["looking-for-captions-as-supplement"]
+    expects:
+      - "Prominent volume controls with significant boost beyond default."
+      - "Toggleable captions for all video and audio content."
+      - "Visual indicators for all sounds and audio alerts."
+      - "Mono audio available system-wide and in the application."
+      - "No auto-play audio at unexpected volumes."
+      - "Visual backups for every quiet or subtle audio cue."
+      - "Speech not buried under music or sound effects."
+
+learning:
+  - id: "discovering-audio-enhancement-settings"
+    facts: "Volume boost, equaliser, mono audio, and noise cancellation may go undiscovered when buried in system settings. Application enhancements should be available from the player or call interface."
+  - id: "caption-toggle-discovery"
+    facts: "Users toggle captions as listening conditions change, sometimes mid-video or mid-call. Controls must be immediately accessible during playback so searching does not cause more missed content."
+  - id: "audio-quality-calibration"
+    facts: "Users calibrate hearing devices and volume on first use. Quality changes between calls, during screen sharing, or under low bandwidth force repeated recalibration; consistent audio reduces this overhead."
+  - id: "learning-which-sounds-have-visual-backups"
+    facts: "Consistent audio-plus-visual pairing builds confidence. Inconsistent pairing creates anxiety because users cannot predict which cues will be missed."
+  - id: "volume-management-in-shared-spaces"
+    facts: "Compensating with high volume may expose private content nearby. Easy volume and caption controls support switching to captions-only or text alternatives when loud audio is inappropriate."
+
+heuristic_overrides:
+  1: "Every audio status cue needs visual redundancy because it may be heard intermittently or missed as conditions change. Visual status must remain present whether the environment is quiet or noisy."
+  2: "Audio should provide clear, well-paced speech without competing noise, heavy compression, or background music. Where possible, separate speech and non-speech tracks so partially heard audio remains processable."
+  3: "Users need in-playback control of volume, captions, stereo or mono audio, noise cancellation, playback speed, pause, and replay. Call audio input and output controls should not disrupt the call."
+  4: "Caption coverage, visual redundancy, and encoding quality must remain consistent across content. Variation forces repeated volume or hearing-device recalibration and makes access strategies unreliable."
+  5: "Visual error indicators must always accompany optional audio feedback. An audio error heard in quiet but missed in noise cannot reliably prevent later consequences."
+  6: "Surface volume boost, captions, mono audio, and noise cancellation in the media or call interface. Users should not need to recall a path such as Accessibility > Audio > Captioning > Settings during a call."
+  7: "Support variable hearing conditions with quick caption and volume controls. Captions may be unnecessary with clean audio in quiet settings but essential under noise or poor quality, without requiring navigation away from the task."
+  8: "Background music, ambient effects, and simultaneous streams can be functional barriers when they compete with speech. Make optional audio separately controllable or disableable, and keep enabled captions readable without overwhelming the view."
+  9: "Show specific visual errors and indicate call-quality degradation so users can distinguish network problems from hearing difficulty. A message such as 'Your connection quality is poor' supports diagnosis."
+  10: "Provide text help for noise cancellation, equaliser, mono audio, captions, and Bluetooth streaming compatibility. Video tutorials require captions and clear audio; documentation must not be audio-only."

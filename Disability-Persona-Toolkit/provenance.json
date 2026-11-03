@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "materials": [
+    {
+      "id": "w3c-coga-personas",
+      "content": [
+        "personas/4.2.10-cognitive-memory.md",
+        "personas/4.2.10b-cognitive-language.md",
+        "personas/4.2.10c-cognitive-numeracy.md",
+        "schemas/4.2.10-cognitive-memory.persona.yaml",
+        "schemas/4.2.10b-cognitive-language.persona.yaml",
+        "schemas/4.2.10c-cognitive-numeracy.persona.yaml"
+      ],
+      "requiredNotice": "personas/cognitive-sources.LICENSE.md",
+      "requiredRepositoryNotice": "LICENSE.txt",
+      "sourceUrls": [
+        "https://www.w3.org/TR/coga-usable/",
+        "https://www.w3.org/TR/2026/DNOTE-coga-research-modules-20260205/"
+      ],
+      "upstreamLicense": "W3C Software and Document License",
+      "repositoryLicense": "MIT",
+      "adaptation": true
+    },
+    {
+      "id": "w3c-wcag-reference",
+      "content": ["standards/wcag-requirements.md"],
+      "requiredNotice": "standards/wcag-requirements.LICENSE.md",
+      "requiredRepositoryNotice": "LICENSE.txt",
+      "sourceUrls": ["https://www.w3.org/TR/WCAG22/"],
+      "upstreamLicense": "W3C Document License (2023)",
+      "repositoryLicense": "MIT",
+      "adaptation": true
+    },
+    {
+      "id": "original-eval-fixtures",
+      "content": [
+        "tests/fixtures/images/combobox.svg",
+        "tests/fixtures/images/combobox.png",
+        "tests/fixtures/images/colour-contrast.svg",
+        "tests/fixtures/images/colour-contrast.png"
+      ],
+      "requiredNotice": "tests/fixtures/images/README.md",
+      "requiredRepositoryNotice": "LICENSE.txt",
+      "sourceUrls": [],
+      "upstreamLicense": "MIT",
+      "repositoryLicense": "MIT",
+      "adaptation": false
+    }
+  ]
+}

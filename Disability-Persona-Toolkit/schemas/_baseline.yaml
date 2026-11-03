@@ -1,0 +1,93 @@
+strategies:
+  - id: visual-scanning-and-layout-comprehension
+    mechanisms: [visual-perception]
+    context: all
+    behavior:
+      - "Scans header, navigation, main content, sidebar, and footer to understand layout."
+      - "Identifies controls by visual affordances; headings, spacing, colour, and size guide attention to primary content and actions."
+    reqs:
+      - "Provide clear visual hierarchy through headings, spacing, and grouping."
+      - "Interactive elements must look interactive through visible borders, underlines, or other affordances; primary actions should be visually prominent."
+  - id: mouse-pointer-interaction
+    mechanisms: [mouse, trackpad, touchscreen]
+    context: desktop
+    behavior:
+      - "Uses mouse, trackpad, or touch pointer to click, select text, drag, hover for tooltips, and right-click for context menus."
+      - "Hover states provide feedback about interactivity."
+    reqs:
+      - "Pointer target size and spacing must support easy activation without accidentally activating adjacent controls."
+      - "Hover states should indicate interactivity; drag-and-drop should have clear affordances."
+  - id: reading-and-scrolling
+    mechanisms: [visual-reading, mouse-wheel-scroll-gesture]
+    context: all
+    behavior:
+      - "Reads sequentially or scans headings, then scrolls vertically and sometimes horizontally beyond the viewport."
+      - "Expects logical top-to-bottom, left-to-right flow in LTR languages."
+    reqs:
+      - "Text must have sufficient contrast, reasonable font size, and adequate line spacing."
+      - "Avoid horizontal scrolling at standard viewport widths; long pages should provide navigation aids such as a table of contents or back-to-top control."
+  - id: form-interaction
+    mechanisms: [keyboard-typing, mouse-clicking-fields, visual-reading-labels]
+    context: all
+    behavior:
+      - "Clicks into fields, types, selects dropdown options, checks boxes, and submits forms."
+      - "Expects clear labels, placeholder text that does not replace labels, and immediate error feedback."
+    reqs:
+      - "Every form field must have a visible label, and required fields must be clearly indicated."
+      - "Error messages must be specific, adjacent to the field, and visible without scrolling; successful submission must be clearly confirmed."
+  - id: navigation-and-wayfinding
+    mechanisms: [visual-scanning, mouse-clicking, browser-controls]
+    context: all
+    behavior:
+      - "Uses menus, breadcrumbs, links, and browser back/forward while building a mental model of the application's structure."
+      - "Expects to know the current location, available destinations, and how to return."
+    reqs:
+      - "Keep navigation consistent across pages and clearly indicate current location through an active navigation item or breadcrumbs."
+      - "Important actions must be reachable from any page; the browser back button should work predictably."
+  - id: touch-pointer-interaction
+    mechanisms: [touchscreen-tap, swipe-gestures, pinch-zoom]
+    context: mobile
+    behavior:
+      - "Taps, swipes, pinch-zooms, and long-presses without hover preview."
+      - "Needs discoverable gestures, accurately hittable touch targets, and single-pointer alternatives."
+    reqs:
+      - "Touch targets must be easy to activate without hitting adjacent controls; essential information must not rely on hover."
+      - "Custom gestures must have single-pointer alternatives; drag-and-drop must have tap-based alternatives; scroll gestures must not cause accidental activation."
+user_variants:
+  - id: new-infrequent-user
+    context: all
+    uses_strategies: [visual-scanning-and-layout-comprehension, navigation-and-wayfinding, form-interaction]
+    behavior:
+      - "Encounters the interface for the first time or after a long gap and cannot recall shortcuts or hidden features."
+      - "Relies on visual affordances, labels, and progressive disclosure to learn the interface."
+    expects:
+      - "Interface is learnable without documentation."
+      - "Primary actions are visually obvious."
+      - "Error messages guide toward resolution."
+      - "Navigation structure is understandable."
+  - id: expert-frequent-user
+    context: all
+    uses_strategies: [mouse-pointer-interaction, navigation-and-wayfinding]
+    behavior:
+      - "Uses the interface regularly, has built a mental model, and relies on consistency, shortcuts, and efficient workflows."
+      - "Notices and is disrupted by changes to established patterns."
+    expects:
+      - "Keyboard shortcuts for common tasks."
+      - "Consistent layout across sessions and pages."
+      - "Efficient paths to frequently used features."
+      - "Changes to familiar workflows are clearly communicated."
+learning:
+  - id: first-visit
+    facts:
+      - "Common web, desktop, and mobile conventions set expectations; standard patterns such as hamburger menus, search icons, tabs, and modals are recognized immediately."
+      - "Non-standard patterns require learning."
+  - id: mental-models
+    facts:
+      - "Early interactions establish a mental model; later violations, such as a button that sometimes navigates and sometimes submits, erode trust and make users cautious and slower."
+  - id: error-recovery
+    facts:
+      - "All users sometimes make mistakes; provide recovery through undo, confirmation dialogs, and clear error messages rather than punishment."
+      - "Irreversible actions without confirmation are universally problematic."
+  - id: cognitive-load
+    facts:
+      - "Every interface competes for attention; cluttered layouts, excessive options, and unclear hierarchy increase cognitive load for everyone, not only users with cognitive disabilities."

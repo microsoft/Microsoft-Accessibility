@@ -1,0 +1,150 @@
+# yaml-language-server: $schema=persona.schema.json
+
+clause: "4.2.10b"
+title: "Usage with limited cognition, language or learning (language and communication)"
+alias: cognitive-language
+status: elaborated
+fps_statement: "The ICT provides features and/or presentation that makes it simpler and easier to understand, operate, and use."
+device_context: all
+baseline_excludes: []
+provenance:
+  source_urls:
+    - https://www.w3.org/TR/coga-usable/
+    - https://www.w3.org/TR/2026/DNOTE-coga-research-modules-20260205/
+  upstream_license: W3C Software and Document License
+  repository_license: MIT
+  required_notice: personas/cognitive-sources.LICENSE.md
+  adaptation: true
+  reviewed_on: "2026-10-12"
+
+prompt:
+  role: "Limited language and communication: senses and motor control are unaffected; reading, decoding, and understanding are slow and effortful, while written production can be hard."
+  blocked_input: []
+  user_types: []
+  checklist:
+    - "READ: Use readable fonts, adequate spacing, short left-justified lines, and no text over busy or patterned backgrounds."
+    - "VOCABULARY: Prefer audience-appropriate everyday words and explain avoidable uncommon words, acronyms, or jargon within one click."
+    - "SYNTAX: Use short active sentences about one thing; avoid double negatives and nested clauses."
+    - "LITERAL: State meaning explicitly and explain or avoid metaphor, idiom, sarcasm, and implied content."
+    - "STRUCTURE: Chunk content with headings, short paragraphs, lists, summaries, and white space instead of dense blocks."
+    - "SYMBOLS / ICONS: Support important controls and headings with familiar symbols, while pairing unfamiliar icons with text."
+    - "ALTERNATIVES: Offer findable plain-language summaries, images, diagrams, video, or read-aloud, and support simplification extensions."
+    - "SPEECH OUTPUT: Use real logically ordered text, correct language tags, and punctuation that text-to-speech and phonetic readers pronounce and chunk correctly."
+
+assistive_tech:
+  - id: text-to-speech-read-aloud-with-synchronized-highlighting
+    category: read-aloud
+    platforms: [Windows, macOS, iOS, Android, "browser extensions"]
+    model: "Read-aloud voices real selectable text and highlights words or phrases, providing a primary comprehension route. Logical reading order, correct language tags, and sensible punctuation are required; images of text, scrambled DOM order, or missing language attributes can destroy meaning."
+  - id: reading-and-simplification-toolbars
+    category: reading-support
+    platforms: ["Browser extensions", "reading apps (desktop and mobile)"]
+    model: "Reading toolbars adjust font, spacing, and line length, add rulers or masks, and may summarize or simplify wording. Content trapped in canvas, images, or inaccessible custom widgets cannot be reached or reflowed by these tools."
+  - id: symbol-and-aac-systems
+    category: symbol-aac
+    platforms: ["Dedicated AAC devices", iOS, Android, "browser/extension symbol sets"]
+    model: "Augmentative and alternative communication (AAC) and symbol systems support understanding and expression by selecting familiar pictographic or ideographic symbols rather than writing words. Users know one vocabulary; expose known-symbol personalization and do not rely only on words or bespoke icons."
+  - id: spell-check-grammar-and-word-prediction-tools
+    category: writing-support
+    platforms: [OS, browser, extensions, "AAC apps"]
+    model: "Prediction and spelling or grammar support reduce how much language the user must spell or recall. Use standard editable fields and do not suppress right-click, paste, or the tool's corrections."
+  - id: dictionary-and-glossary-pop-ups
+    category: definition-tool
+    platforms: ["Browser extensions", "in-page glossaries"]
+    model: "On-demand definitions turn uncommon and domain terms into usable content. Keep words selectable and provide in-page definitions or a glossary for domain-specific terms."
+  - id: translation-and-phonetic-readers
+    category: language-support
+    platforms: [Browser, OS, extensions]
+    model: "Translation and phonetic readers support users unfamiliar with the interface language or needing diacritics and phonetic cues, including Arabic and Hebrew. Correct language tags and preserved letters and marks are required; stripped diacritics or missing attributes make output wrong."
+  - id: personalization-semantics
+    category: personalization
+    platforms: [Browser, extensions]
+    model: "Personalization can load familiar symbols, attach easy-language explanations, or select a simplified version from preferences configured once by the user or helper. Expose adaptation hooks and preserve meaning and the critical path in simpler alternatives."
+
+strategies:
+  - id: decoding-supported-reading
+    mechanisms: [read-aloud, reading-toolbars, phonetic-readers]
+    behavior: "Uses text-to-speech with highlighting, a reading ruler or spacing, or sounds words out 1 or 2 at a time. Images of text, illogical order, poor punctuation, missing language tags, and busy backgrounds can make support fail."
+    reqs: "Provide real selectable text in logical reading order with correct language tags, clear fonts, generous spacing, and short left-justified lines. Never place essential text only in images or over busy low-contrast backgrounds."
+  - id: skim-for-structure-reading
+    mechanisms: [visual-scanning, reading-toolbars-summaries]
+    behavior: "Uses headings, summaries, emphasized key points, lists, and supporting icons to get the gist before reading only necessary details. Dense unstructured text hides important content and may force abandonment."
+    reqs: "Use clear heading structure, plain-language summaries for long content, short paragraphs and lists, and key-point emphasis. Put critical information first, not inside dense prose."
+  - id: symbol-and-icon-led-navigation
+    mechanisms: [visual-scanning, symbol-aac-systems, personalization]
+    behavior: "Recognizes help, search, home, contact, and other familiar symbols more readily than text. Unfamiliar bespoke icons or text-only controls without supporting symbols can be unidentifiable."
+    reqs: "Place familiar conventional icons or symbols next to important controls, headings, and their text labels. Support known personalized symbols and never rely on unfamiliar icons alone."
+  - id: literal-interpretation
+    mechanisms: [visual-reading, read-aloud]
+    behavior: "Takes instructions and labels at face value and may not infer figurative or unstated meaning. Metaphor, idiom, sarcasm, ambiguity, and implied steps can cause misunderstanding."
+    reqs: "Use literal concrete language and explicitly state steps, consequences, and context. Explain or avoid metaphor, idiom, sarcasm, and implied content."
+  - id: alternative-format-substitution
+    mechanisms: [read-aloud, reading-toolbars, personalization]
+    behavior: "Switches from difficult text to a plain-language summary, simpler version, image, diagram, short video, or read-aloud. The alternative must be findable, equivalent in meaning, and clearly related to the primary content."
+    reqs: "Offer equivalent summaries, simplified versions, images, diagrams, video, and read-aloud for complex or long content. Provide one simple action to choose the easiest format."
+  - id: assisted-expression
+    mechanisms: [word-prediction, spell-grammar-tools, symbol-aac, speech-input]
+    behavior: "Uses prediction, spelling or grammar support, symbols, or speech instead of unaided writing. Blocking tools or rejecting non-text input removes the response mechanism."
+    reqs: "Use standard editable fields compatible with prediction, spelling, and speech; allow paste and right-click. Minimize free text, accept forgiving input, and offer selection instead of spelling where possible."
+
+user_variants:
+  - id: reading-disability-user
+    behavior: "Reads slowly and effortfully, often sounding out 1 or 2 words at a time; Dyslexia is the archetype. Intelligence is unaffected; comprehension is strong once content is accessible. Relies on read-aloud, readable presentation, summaries, and structure."
+    uses_at: [text-to-speech-read-aloud-with-synchronized-highlighting, reading-and-simplification-toolbars]
+    uses_strategies: [decoding-supported-reading, skim-for-structure-reading, alternative-format-substitution]
+    expects:
+      - "Real selectable text in logical order for read-aloud."
+      - "Clear fonts, generous spacing, short left-justified lines, and no text on busy backgrounds."
+      - "Plain-language summaries and headings make key points findable without reading everything."
+      - "Put important information first, not mid-page."
+  - id: language-processing-user
+    behavior: "Has impaired comprehension and expression, such as aphasia after stroke; short literal text and read-aloud help, while complex passive sentences can be unintelligible. May copy wording that cannot be produced unaided and needs entered text preserved."
+    uses_at: [text-to-speech-read-aloud-with-synchronized-highlighting, spell-check-grammar-and-word-prediction-tools, reading-and-simplification-toolbars]
+    uses_strategies: [decoding-supported-reading, literal-interpretation, assisted-expression]
+    expects:
+      - "Use short active sentences, common words, and one idea at a time."
+      - "Support read-aloud with clear well-punctuated text."
+      - "Accept assisted and approximate expression without losing entered text."
+      - "Give clear literal instructions with examples."
+  - id: symbol-and-aac-dependent-user
+    behavior: "Has limited reading and writing and depends on familiar pictographic symbols and AAC for understanding and communication, often alongside intellectual disability. Learning a new symbol vocabulary is slow and may be impractical."
+    uses_at: [symbol-and-aac-systems, personalization-semantics]
+    uses_strategies: [symbol-and-icon-led-navigation, alternative-format-substitution, assisted-expression]
+    expects:
+      - "Pair text with familiar conventional symbols on important controls and headings."
+      - "Support the user's known personalized symbol set."
+      - "Provide word-free or symbol-based paths for key actions, including login and help."
+      - "Offer images, symbols, or short video instead of blocks of text."
+  - id: literal-language-user
+    behavior: "Intellectually capable but literal and concrete; metaphor, idiom, sarcasm, and implication can cause genuine misunderstanding. Many autistic users fit this profile. Needs explicit wording and logical structure."
+    uses_at: [text-to-speech-read-aloud-with-synchronized-highlighting, dictionary-and-glossary-pop-ups]
+    uses_strategies: [literal-interpretation, skim-for-structure-reading]
+    expects:
+      - "Explain or avoid metaphors, idioms, and sarcasm."
+      - "State instructions and consequences explicitly with nothing left to inference."
+      - "Keep structure and navigation consistent and logical."
+      - "Explain non-literal or ambiguous content in text, images, and media."
+
+learning:
+  - id: vocabulary-is-slow-or-impossible-to-acquire
+    facts: "New terms may be effortful or unrealistic to learn; coined words, unexplained acronyms, and jargon without a one-click definition can make content unusable. Use audience-appropriate common words and on-demand explanations."
+  - id: reading-is-effortful-and-fatiguing
+    facts: "Reading word by word consumes energy, so dense text may exhaust the user before the key point. Front-load the message, chunk content, and provide summaries."
+  - id: symbols-must-be-familiar-to-help
+    facts: "Symbols reduce language load only when already known; a new symbol set can take too long to learn. Use familiar conventional and personalizable symbols, not bespoke iconography that adds decoding."
+  - id: literal-by-default-interpretation
+    facts: "Implied, figurative, and ambiguous meaning may be missed without awareness of the misunderstanding. Explicit literal wording and attached explanations prevent confident but incorrect interpretations."
+  - id: speech-output-depends-on-clean-text
+    facts: "Text-to-speech and phonetic readers depend on real text, logical DOM order, language tags, and conventional punctuation. Images of text or malformed markup can cause skips and mispronunciations that change meaning."
+
+heuristic_overrides:
+  "1": "Status must be readable as well as present: use plain literal language, a familiar symbol, and read-aloud-friendly text where useful. Rapid explicit feedback matters because slow decoding can leave the user unsure whether send or save succeeded; dense status text can be equivalent to silence."
+  "2": "Use audience-appropriate common words, simple active sentences, literal language, and familiar supporting symbols. Domain terms needed by the intended audience are valid, even beyond a universal 1500-word simplicity target, but must be consistent and supported by on-demand definitions, examples, or symbols; flag unsupported acronyms, coined meanings, non-literal language, gratuitous jargon, and inconsistent naming."
+  "3": "Provide cancel, back, login, help, and undo through simple single-step actions, symbols, or assisted input rather than heavy reading or writing. Keep actions reversible and do not punish imperfectly produced input."
+  "4": "Use one word per concept and one consistent meaning per icon or symbol across the interface. Conventional stable labels and symbols allow recognition; changed meaning forces decoding again."
+  "5": "Prevent language-driven errors with visible common-word labels, examples, forgiving formats, and instructions before fields. Minimize free text and offer selection over spelling where possible."
+  "6": "Make meaning recognizable with persistent common-word labels, familiar supporting symbols, and definitions available in one click. Do not hide essential meaning in dense text or unfamiliar icons."
+  "7": "Offer equivalent plain-language summaries, simplified versions, images, diagrams, short video, and read-aloud, with persistent personalization where possible. Supporting symbols, definitions, and assisted input reduce reading and writing load; text shortcuts do not."
+  "8": "Use short chunks, one idea per paragraph, lists, summaries, generous white space, and foreground text off busy backgrounds. Remove extra words and decoration while preserving headings, summaries, and symbols that make meaning findable."
+  "9": "Place plain literal error text and a reinforcing icon beside the field. State what failed and exactly how to fix it, with an example rather than a code or vague message. Preserve entered input; keep correction small and guided."
+  "10": "Write help in clear audience-appropriate language with familiar symbols, concrete examples, summaries, images, video, and an easy human route. Give domain terms on-demand definitions; help must not reproduce the dense unsupported language it explains."

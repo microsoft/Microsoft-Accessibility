@@ -14,6 +14,21 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 
 ## Building from source
 
+### Disability Persona Toolkit (DPT)
+
+The toolkit is reference content, with Python tooling for offline validation and optional
+model evaluations. See its [README](Disability-Persona-Toolkit/README.md#development-and-offline-validation)
+for setup and its [contribution guide](Disability-Persona-Toolkit/CONTRIBUTING.md) for persona
+authoring, baseline propagation, provenance, and human review.
+
+From the repository root, change to `Disability-Persona-Toolkit` before running toolkit commands.
+Its [validation workflow](.github/workflows/dpt-validate.yml) is path-filtered to toolkit content
+and its supporting configuration; it does not build or release the Windows utility.
+
+The toolkit's AI-consumed content and governance changes require CODEOWNER review and the
+DPT-specific sections of the pull request checklist. These sections do not apply to
+Windows-only changes.
+
 ### Maximize-All-Windows
 
 **Prerequisites**

@@ -1,0 +1,56 @@
+name: Disability Persona Toolkit (DPT) validation
+
+on:
+  pull_request:
+    paths:
+      - 'Disability-Persona-Toolkit/**'
+      - '.github/workflows/dpt-validate.yml'
+      - '.github/instructions/dpt.instructions.md'
+      - '.github/skills/persona-to-schema/**'
+      - '.github/CODEOWNERS'
+      - '.github/PULL_REQUEST_TEMPLATE.md'
+  push:
+    branches: [main]
+    paths:
+      - 'Disability-Persona-Toolkit/**'
+      - '.github/workflows/dpt-validate.yml'
+      - '.github/instructions/dpt.instructions.md'
+      - '.github/skills/persona-to-schema/**'
+      - '.github/CODEOWNERS'
+      - '.github/PULL_REQUEST_TEMPLATE.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: Disability-Persona-Toolkit
+
+jobs:
+  validate:
+    name: DPT validation (${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.12', '3.14']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install development dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Check installed dependencies
+        run: python -m pip check
+      - name: Validate structure and offline behavior
+        run: |
+          python tests/validate_structure.py
+          python -m pytest tests/validate_structure.py tests -q
+      - name: Validate generated-schema consumption
+        env:
+          PERSONA_SOURCE: schema
+        run: python -m pytest tests/test_schema_loading.py tests/test_prompt_safeguards.py tests/evals/sub_agents/test_per_heuristic_loading.py -q

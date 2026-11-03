@@ -1,0 +1,22 @@
+# Disability Persona Toolkit (DPT) content and its governance.
+# These entries do not assign ownership of the Windows utility or its release workflow.
+/Disability-Persona-Toolkit/ @aarongustafson @ferbonnin
+/Disability-Persona-Toolkit/schemas/ @aarongustafson @ferbonnin
+/Disability-Persona-Toolkit/personas/ @aarongustafson @ferbonnin
+/Disability-Persona-Toolkit/heuristics/ @aarongustafson @ferbonnin
+/Disability-Persona-Toolkit/methodology/ @aarongustafson @ferbonnin
+/Disability-Persona-Toolkit/standards/ @aarongustafson @ferbonnin
+/Disability-Persona-Toolkit/provenance.json @aarongustafson @ferbonnin
+/Disability-Persona-Toolkit/LICENSE.txt @aarongustafson @ferbonnin
+/Disability-Persona-Toolkit/tests/validate_structure.py @aarongustafson @ferbonnin
+/Disability-Persona-Toolkit/tests/evals/ @aarongustafson @ferbonnin
+/Disability-Persona-Toolkit/tests/fixtures/ @aarongustafson @ferbonnin
+/Disability-Persona-Toolkit/scripts/ @aarongustafson @ferbonnin
+/Disability-Persona-Toolkit/AGENTS.md @aarongustafson @ferbonnin
+/Disability-Persona-Toolkit/README.md @aarongustafson @ferbonnin
+/Disability-Persona-Toolkit/CONTRIBUTING.md @aarongustafson @ferbonnin
+/.github/workflows/dpt-validate.yml @aarongustafson @ferbonnin
+/.github/instructions/dpt.instructions.md @aarongustafson @ferbonnin
+/.github/skills/persona-to-schema/ @aarongustafson @ferbonnin
+/.github/CODEOWNERS @aarongustafson @ferbonnin
+/.github/PULL_REQUEST_TEMPLATE.md @aarongustafson @ferbonnin

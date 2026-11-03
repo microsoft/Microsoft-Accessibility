@@ -1,8 +1,19 @@
 # Microsoft-Accessibility
 
-A collection of small Windows accessibility utilities from Microsoft.
+A collection of accessibility tools and resources from Microsoft.
 
 ## Projects
+
+### [Disability Persona Toolkit (DPT)](./Disability-Persona-Toolkit)
+
+Structured disability personas, accessibility-focused usability heuristics, and evaluation
+guidance for AI agents, designers, researchers, and accessibility evaluators. Markdown is the
+authoring source; generated YAML supports structured consumption. Personas and automated
+evaluations do not replace co-design and testing with people with disabilities.
+
+See the [toolkit README](./Disability-Persona-Toolkit/README.md) for usage, limitations, and
+offline validation, and its [contribution guide](./Disability-Persona-Toolkit/CONTRIBUTING.md)
+for authoring and persona-to-schema conversion.
 
 ### [Maximize-All-Windows](./Maximize-All-Windows)
 

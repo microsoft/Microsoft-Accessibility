@@ -1,0 +1,158 @@
+# yaml-language-server: $schema=persona.schema.json
+
+clause: "4.2.2"
+title: "Usage with limited vision"
+alias: low-vision
+status: elaborated
+fps_statement: "Where ICT provides visual modes of operation, the ICT provides features enabling users with limited vision to make better use of their limited vision."
+device_context: all
+baseline_excludes: []
+
+prompt:
+  role: "A person with limited vision needs magnification, enlargement, or higher contrast while maintaining orientation. Judge combined inner and contextual attributes; do not flag one small attribute when the whole element is identifiable."
+  blocked_input: []
+  user_types:
+    - "Moderate zoom user - Uses OS scaling and browser zoom to approximately 200%, relying on reflow."
+    - "Screen magnifier user - Uses ZoomText, Windows Magnifier, or macOS Zoom at 3x-8x in a small viewport."
+    - "Contrast sensitivity user - Uses Windows High Contrast Mode or forced-colours, with or without magnification."
+    - "Dual-channel user - Combines magnification with screen-reader speech."
+  checklist:
+    - "Wrap to fit: Around 320 CSS pixels per in-scope container, can lines be read without cross-line scrolling?"
+    - "Wrap scope: Treat text resize, orientation, focus obscured, and visible focus as adjacent needs."
+    - "High magnification: At 3x-8x, are co-location and left justification predictable?"
+    - "Hover stability: Do tooltips and popups remain while panning?"
+    - "Focus movement: Does focus reach dynamic content without jumps?"
+    - "Forced colours: Do controls, focus, borders, states, icons, and images remain distinct?"
+    - "Visual landmarks: Do dividers, boundaries, and headings support orientation?"
+    - "Visual indicators: Are focus, borders, and selection distinct at high magnification?"
+    - "Drag-and-drop: Is a non-drag alternative available?"
+    - "Dual channel: Do viewport, screen-reader focus, and accessibility tree stay synchronized?"
+    - "Audio feedback: Do sounds supplement off-screen cues?"
+    - "Scaled controls: Do drop-downs, lists, and autocomplete enlarge with text?"
+
+assistive_tech:
+  - id: os-text-size-dpi-scaling
+    category: display-scaling
+    platforms: [Windows, macOS, Linux]
+    model: "Enlarges system UI and application content through platform text size, DPI scaling, or resolution settings. Applications that do not honour platform scaling may remain at default size and create inconsistency."
+  - id: browser-zoom
+    category: zoom
+    platforms: [Windows, macOS, Linux]
+    model: "Ctrl/Cmd + Plus or mouse wheel zoom narrows the viewport; 200% on a 1280px browser yields 640px. Unlike screen magnification, browser zoom triggers responsive layout and reflow."
+  - id: zoomtext
+    category: screen-magnifier
+    platforms: [Windows]
+    model: "Magnifies rendered display content at 1x-60x with panning, smoothing, colour, cursor/focus enhancements, and optional speech. Unlike browser zoom, it does not trigger reflow, so wide lines require horizontal panning."
+  - id: windows-magnifier
+    category: screen-magnifier
+    platforms: [Windows]
+    model: "Provides full-screen, lens, and docked magnification while tracking pointer, focus, and insertion point. It does not trigger reflow and has fewer features than ZoomText."
+  - id: macos-zoom
+    category: screen-magnifier
+    platforms: [macOS]
+    model: "Provides full-screen, split-screen, and picture-in-picture magnification, tracks focus and pointer, and toggles with Option+Cmd+8. It does not trigger reflow."
+  - id: windows-high-contrast-mode
+    category: forced-colours
+    platforms: [Windows]
+    model: "Replaces application colours with a selected system palette; custom backgrounds, shadows, and gradients disappear while system colours and visible outlines survive. It is independent of magnification."
+  - id: fusion-zoomtext-jaws
+    category: combined
+    platforms: [Windows]
+    model: "Combines ZoomText magnification and JAWS speech, tracking mouse and screen reader focus. Users use magnification for spatial context and speech for dense text or structural navigation."
+
+strategies:
+  - id: zoomed-reading-and-text-reflow
+    mechanisms: [browser-zoom, os-dpi-scaling, screen-magnifier-user-resized-containers]
+    behavior: "Sizes each needed scrolling container to around 320 CSS pixels and reads along the line-progression axis without panning across a line. Browser zoom triggers reflow; screen magnification does not, so the container itself must wrap."
+    reqs: "In-scope wrappable content must fit its container around 320 CSS pixels without clipping, overlap, truncation, or cross-line scrolling; failure also requires non-2D content and no equivalent wrap-to-fit alternative. Tables, charts, maps, presentations, and persistent toolbars are excepted, but table cells and text subsections must wrap; visible overflow affordances should expose 2D scrolling, and relocated or collapsed content may change if still reachable."
+  - id: magnified-viewport-panning
+    mechanisms: [mouse-trackpad, magnifier-keyboard-shortcuts, focus-cursor-tracking]
+    behavior: "At 3x-8x, systematically pans a small viewport left-to-right then down using pointer, Alt+Ctrl+Arrow, or tracking."
+    reqs: "Keep layout predictable and content left-justified; hover content must remain stable, and focus changes must not jump to unexpected locations."
+  - id: focus-and-cursor-tracking
+    mechanisms: [magnifier-focus-tracking, keyboard-navigation]
+    behavior: "Uses Tab and arrow keys while the magnifier pans to keep focus and insertion point visible; tracking failure forces a disorienting manual search."
+    reqs: "Move focus to relevant dynamic content, never without corresponding user action, and land on the relevant element rather than a distant container."
+  - id: high-contrast-scanning
+    mechanisms: [windows-high-contrast-mode, macos-increase-contrast]
+    behavior: "Scans forced-colours output using system foregrounds, borders, outlines, and visual landmarks that survive custom colour removal."
+    reqs: "Controls and states must remain visible and distinguishable in forced-colours; visible outlines survive while shadows and fills may not. Icons and images need inherent contrast or a surviving fallback."
+  - id: dual-channel-reading
+    mechanisms: [screen-magnifier-visual, screen-reader-speech, heading-landmark-navigation]
+    behavior: "Uses magnification for layout orientation, then speech and structural navigation for text and distant content."
+    reqs: "Synchronize magnifier viewport and screen reader focus, expose all visual content to the screen reader, match announcements to visual state, and preserve the accessibility tree as content adapts."
+
+user_variants:
+  - id: increased-text-size-and-moderate-zoom
+    behavior: "With approximately 20/70-20/200 acuity, uses OS text/DPI scaling, browser zoom up to approximately 200%, and app-level font sizing without a dedicated magnifier. May use dark mode or extra contrast but does not require forced-colours."
+    uses_at: [os-text-size-dpi-scaling, browser-zoom]
+    uses_strategies: [zoomed-reading-and-text-reflow]
+    expects:
+      - "In-scope text reflows without horizontal scrolling up to 200% browser zoom."
+      - "Relocated or collapsed content remains discoverable and reachable."
+      - "Drop-downs, select lists, tooltips, and autocomplete scale with text."
+      - "Persistent UI leaves readable content width."
+      - "No clipping, overlap, or truncation of enlarged text."
+      - "Uncluttered, predictable layouts and clearly labelled iconography."
+  - id: screen-magnifier-user
+    behavior: "With approximately 20/200-20/800 acuity or higher or visual field loss, uses 300-500% or greater magnification; rendered content does not reflow. May combine browser zoom for reflow before magnifying further, then pans the small viewport."
+    uses_at: [zoomtext, windows-magnifier, macos-zoom]
+    uses_strategies: [magnified-viewport-panning, focus-and-cursor-tracking]
+    expects:
+      - "Left-justified content supports straight-down panning."
+      - "Hover content remains stable during panning."
+      - "Focus does not jump unexpectedly; dynamic content appears near its trigger."
+      - "Landmarks and stacked-surface relationships remain clear; subtle 1px borders, focus, or selection indicators may be invisible."
+      - "Drag-and-drop has keyboard or non-drag alternatives."
+      - "Audio feedback supplements off-screen visual state changes."
+      - "Minimal wasted space and consistent layout reduce panning."
+      - "Resizable or collapsible containers can narrow content width."
+  - id: contrast-sensitivity-high-contrast-user
+    behavior: "Uses forced-colours for contrast sensitivity loss or photophobia, with or without magnification; the distinct barrier is survival of overridden styling."
+    uses_at: [windows-high-contrast-mode]
+    uses_strategies: [high-contrast-scanning]
+    expects:
+      - "All controls, states, focus outlines, boundaries, and landmarks remain distinguishable in forced-colours."
+      - "Meaning never depends only on subtle colour or background changes."
+      - "Images, icons, and SVGs retain contrast or fallbacks; icon-only controls have labels or tooltips."
+      - "Relationships among controls and stacked surfaces remain visible."
+  - id: magnification-with-screen-reader
+    behavior: "Uses magnification for spatial context and speech for long text, pixelated content, or elements outside the current zoomed view."
+    uses_at: [fusion-zoomtext-jaws, windows-magnifier]
+    uses_strategies: [dual-channel-reading, focus-and-cursor-tracking, magnified-viewport-panning]
+    expects:
+      - "Magnifier viewport and screen reader focus remain synchronized."
+      - "All visual content and non-drag alternatives are screen-reader accessible."
+      - "Announcements match visual state and audio supplements distant visual cues."
+      - "Adapted or hidden content retains a correct accessibility tree."
+      - "Both modalities remain functionally complete simultaneously."
+
+learning:
+  - id: first-visit
+    facts: "The user tests reflow, forced-colours affordances, and magnifier focus tracking; poor adaptation forces trial and error at every zoom level."
+  - id: spatial-memory-is-essential
+    facts: "A small magnified viewport requires a mental map of regions and controls; layout changes increase cognitive load and panning."
+  - id: wayfinding-within-magnified-viewport
+    facts: "Bold dividers, boundaries, and consistent headings distinguish small panned views; simplicity reduces clutter without removing orientation landmarks."
+  - id: panning-cost-is-cumulative
+    facts: "Empty space, unstable tooltips, and unexpected focus jumps accumulate physical and cognitive effort and fatigue."
+  - id: dual-channel-switching
+    facts: "Users switch from magnification for spatial scanning to speech for dense or visually inaccessible content; one modality cannot compensate when the other is functionally incomplete."
+  - id: contrast-minimums-are-not-usability-targets
+    facts: "4.5:1 normal-text and 3:1 large-text contrast are conformance floors calibrated around 20/40 vision, not usability goals; closer to 7:1 body text supports roughly 20/80 vision."
+  - id: evaluate-all-text-states
+    facts: "Placeholder, typed, selected, disabled, and error text can have different contrast; evaluate every state, not only the empty default."
+  - id: dynamic-content-and-spatial-awareness
+    facts: "At high magnification, dynamic content far from tracked focus may go unnoticed; assess its location and signals such as focus movement or audio."
+
+heuristic_overrides:
+  1: "Status must be perceivable near the current magnified viewport or reached through focus tracking; distant updates may never be seen. Audio may supplement visual cues, and forced-colours status indicators must survive stripped custom colours."
+  2: "Spatial metaphors requiring a full-page view can fail at high magnification. Icon-only controls need stable, readable labels or tooltips; colour-dependent icons lose meaning in forced-colours."
+  3: "Accidental activation is more likely while panning. Keep undo and cancel locatable in the current magnified viewport, support Escape dismissal, and return focus to the trigger."
+  4: "Consistent layout, focus styling, system colours, and outlines preserve spatial memory across pages and zoom levels. Moving navigation or changing indicators forces re-learning."
+  5: "Prevent costly recovery with constraints and hints before input. Required indicators must survive forced-colours; destructive confirmations must appear near the trigger, fit the magnified viewport, and distinguish confirm from cancel."
+  6: "Persistent labels, headings, breadcrumbs, borders, and dividers reduce panning to recall context. Background-only landmarks may disappear in forced-colours."
+  7: "Reduce panning through skip links, shortcuts, efficient focus order, left-justified content, and resizable containers. Screen reader heading and landmark navigation provides the dual-channel alternative."
+  8: "Clutter and wasted space increase panning, but removing boundaries destroys orientation. Use simple layouts with clear visual structure that survives forced-colours."
+  9: "Place errors adjacent to fields in the magnified viewport. Forced-colours errors need text, icon, or outline changes beyond red; programmatically associate errors for dual-channel speech."
+  10: "Hover and focus tooltips must remain stable, readable, and unclipped while the user pans. Tooltip styling must survive forced-colours, and documentation should explain product magnification and contrast features."

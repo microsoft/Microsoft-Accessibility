@@ -1,0 +1,104 @@
+# yaml-language-server: $schema=persona.schema.json
+
+clause: "4.2.7b"
+title: "Usage with limited manipulation or strength (voice control)"
+alias: voice-access
+status: elaborated
+fps_statement: "Where ICT requires manual actions, the ICT provides features that enable users to make use of the ICT through alternative actions not requiring manipulation, pinching, or twisting of the wrist, or simultaneous actions."
+device_context: all
+baseline_excludes: [mouse-pointer-interaction, touch-pointer-interaction]
+
+prompt:
+  role: "A person who sees the screen but cannot use a keyboard, mouse, trackpad, or touchscreen and operates entirely through voice control."
+  blocked_input: [keyboard, mouse, trackpad, touchscreen]
+  user_types: []
+  checklist:
+    - "Label match: Does every visible text or icon label match the accessible name the user will speak?"
+    - "Click alternatives: Can every interaction avoid manual dragging, holding, drawing, and gestures?"
+    - "Discoverability: Are interactive elements visually distinguishable from static content?"
+    - "Fallback burden: How many unlabeled or icon-only elements force number overlays?"
+    - "Custom widgets: Do canvas, drag-and-drop, slider, and gesture interactions have voice-operable alternatives?"
+    - "Dictation: Do text fields avoid aggressive autocorrect and unexpected focus movement?"
+
+assistive_tech:
+  - id: windows-voice-access
+    category: voice_control
+    platforms: [Windows 11]
+    model: "Uses on-device recognition for label commands, number overlays, grid navigation, dictation, scrolling, and window control across Windows applications. Efficiency depends on accessible names matching visible labels."
+  - id: macos-voice-control
+    category: voice_control
+    platforms: [macOS]
+    model: "Uses on-device label commands, number overlays, grid navigation, dictation, formatting, editing, and navigation across macOS applications. Power users can add custom vocabulary and commands."
+  - id: ios-voice-control
+    category: voice_control
+    platforms: [iOS, iPadOS]
+    model: "Simulates touch through spoken label, number, grid, dictation, editing, and gesture commands. Custom gestures without a voice equivalent remain barriers."
+  - id: android-voice-access
+    category: voice_control
+    platforms: [Android]
+    model: "Primarily uses numbered overlays, with visible-label commands, dictation, scrolling, and basic navigation. Label matching is less mature than on iOS or Windows, so users often rely on numbers."
+
+strategies:
+  - id: speaking-visible-labels-to-activate-controls
+    mechanisms: [voice-label-command]
+    behavior: "Says 'click [label]' or 'tap [label]' and mentally translates icons into words such as Settings or Search. A visible-label/accessible-name mismatch makes the natural command fail and forces fallback navigation."
+    reqs: "Every interactive element must have visible text or a voice-readable hover/focus tooltip. Visible text must match the accessible name; icon-only names must match common meaning. Accessible names should expand jargon or abbreviations."
+  - id: number-overlay-navigation
+    mechanisms: [show-numbers, spoken-number]
+    behavior: "When labels are missing, ambiguous, or mismatched, shows numbers and speaks the target number. This reliable fallback adds commands and visual scanning, and dense pages create clutter."
+    reqs: "All controls must be exposed in the accessibility tree so overlays detect them, and overlays should not obscure critical content. Clear matching labels should minimize reliance on numbers."
+  - id: grid-navigation
+    mechanisms: [show-grid, spoken-grid-number]
+    behavior: "As a last resort, repeatedly narrows a numbered grid to target unlabeled, unnumbered, canvas, or freeform areas. Multiple commands per target make routine grid use a significant barrier."
+    reqs: "Avoid requiring grid navigation; expose labeled controls in the accessibility tree. Canvas and freeform tools need voice-operable labeled controls."
+  - id: dictation-for-text-input
+    mechanisms: [dictation-mode, voice-text-editing]
+    behavior: "Dictates text and formatting, correction, and editing commands, sometimes switching explicitly between command and dictation modes. Autocorrect, auto-advance, or character limits can alter, interrupt, or truncate speech input."
+    reqs: "Fields and rich editors should accept dictation without formatting conflicts; autocorrect should be configurable or overridable; forms should not auto-advance. Counters should show approaching limits."
+  - id: avoiding-accidental-command-activation-during-dictation
+    mechanisms: [dictation-mode, application-shortcuts]
+    behavior: "Dictation can produce long, unpredictable keystroke streams that accidentally trigger page-wide single-character shortcuts. Users cannot reliably prevent this through phrasing alone."
+    reqs: "Single-character shortcuts can be disabled, remapped to require a modifier, or limited to a focused component. Otherwise dictation routinely triggers unintended commands."
+  - id: voice-driven-scrolling-and-navigation
+    mechanisms: [voice-scroll, voice-page-navigation]
+    behavior: "Uses commands such as 'scroll down', 'page down', 'go to top', and spoken navigation labels because manual scroll, touch gestures, and keyboard shortcuts are unavailable. Long or infinite pages require repeated commands and accelerate fatigue."
+    reqs: "Provide labeled in-page navigation, stable scroll position, and finite or paginated content with labeled controls. Avoid excessive page length and infinite scroll without a clear end."
+
+user_variants:
+  - id: user-who-cannot-use-hands
+    behavior: "Cannot use any manual input because of severe motor disability, limb absence, neuromuscular condition, or high-level spinal cord injury. Voice is the sole input; head or eye tracking may supplement it but cannot replace a missing voice-operable path."
+    uses_at: [windows-voice-access, macos-voice-control, ios-voice-control, android-voice-access]
+    uses_strategies: [speaking-visible-labels-to-activate-controls, number-overlay-navigation, voice-driven-scrolling-and-navigation]
+    expects:
+      - "Every interactive element has a visible label matching its accessible name"
+      - "No interaction requires manual input without a voice-operable alternative, including drag, hold, or drawing"
+      - "Icon-only controls have accessible names matching their visual meaning"
+      - "Dictation works without aggressive autocorrect or auto-advance"
+      - "Hover-revealed controls have voice-accessible alternatives"
+      - "Labeled sections and skip links reduce repeated scroll commands"
+      - "CAPTCHAs have a voice-compatible alternative"
+      - "Time limits allow voice commands to complete"
+
+learning:
+  - id: discovering-speakable-labels
+    facts: "Users test natural labels and fall back to numbers when a command fails, gradually learning each interface's vocabulary. Consistent visible labels and accessible names reduce this learning cost."
+  - id: number-overlay-versus-grid-fallback
+    facts: "New users may use numbers broadly; experienced users prefer faster label commands and use numbers only as fallback. Grid navigation remains the last and highest-friction option."
+  - id: dictation-mode-context-switching
+    facts: "Platforms differ in automatic or explicit switching between command and dictation modes. Unexpected mode state can capture commands as text or prevent expected dictation."
+  - id: managing-voice-fatigue
+    facts: "Extended voice use causes fatigue, so users minimize commands, prefer labels over overlays, and avoid repeated scrolling. Multi-step voice workflows accelerate fatigue."
+  - id: hover-content-invisible
+    facts: "The user cannot hover; hover-only tooltips, menus, controls, and previews can remain permanently hidden without focus- or click-triggered alternatives."
+
+heuristic_overrides:
+  1: "After each spoken command, show nearby visible feedback such as focus movement, loading, or success. Without a change, the user cannot distinguish name mismatch, speech misrecognition, and a successful action with no visible effect."
+  2: "The accessible name must contain the visible label the user naturally speaks. Icon-only controls need names matching common meaning, with visible text or tooltips when the icon is ambiguous."
+  3: "Commands 'click Close', 'click Cancel', and 'press Escape' must work; drag needs a voice alternative. After dismissal, next voice command should act predictably."
+  4: "Use consistent visible labels and accessible names so learned commands work throughout the product. Standard widgets improve compatibility with voice-control platforms."
+  5: "Speech can be misheard, so destructive actions need explicit confirmation and forms should not submit irreversibly on one voice command. Aggressive autocorrect that changes dictated text introduces errors rather than preventing them."
+  6: "The user must see what to say: keep controls and labels visible instead of hover-only, context-menu-only, or otherwise hidden. Hidden controls force recall of both existence and command."
+  7: "Optimize for label commands, then number overlays, then grid navigation. Unlabeled controls force slower fallbacks, increasing voice fatigue and task time."
+  8: "Reduce ambiguous or unlabeled targets because clutter creates noisy number overlays and command collisions. Dense icon-only toolbars force a fallback for every action."
+  9: "Silent command failure makes the user diagnose recognition, naming, and interactivity without guidance. Matching names reduces application-caused failures, and form recovery should preserve dictated values while allowing field-specific correction."
+  10: "Complex products should document working voice commands in help that is itself voice navigable. Provide labeled Help entry points and inline speakable-label hints for ambiguous controls."

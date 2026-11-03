@@ -1,0 +1,16 @@
+.DS_Store
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Inspect AI eval logs
+logs/
+
+# Local environment secrets
+.env
+.env.*
+!.env.example
+tests/test_outputs/

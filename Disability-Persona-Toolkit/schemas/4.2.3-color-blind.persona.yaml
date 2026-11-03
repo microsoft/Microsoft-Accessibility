@@ -1,0 +1,104 @@
+# yaml-language-server: $schema=persona.schema.json
+
+clause: "4.2.3"
+title: "Usage without perception of colour"
+alias: color-blind
+status: elaborated
+fps_statement: "Where ICT provides visual modes of operation, the ICT provides a visual mode of operation that does not require user perception of colour."
+device_context: all
+baseline_excludes: []
+
+prompt:
+  role: "A person with unreliable colour perception can see text, shapes, layout, icons, and images but cannot use colour alone for meaning. Flag only sole-colour differentiation; combined non-colour attributes suffice, while readability, layout, operability, audio/timing, and programmatic semantics are out of scope."
+  blocked_input: [colour-perception]
+  user_types: []
+  checklist:
+    - "Status: Do red/green dots and coloured badges have text, icon, shape, or other cues?"
+    - "Feedback: Is state conveyed by explicit text, an icon, or shape? Text colour or border colour alone is insufficient."
+    - "Links: Are links within text distinguished beyond colour?"
+    - "Data visualisation: Do charts, graphs, and maps add labels, patterns, shapes, or usable callouts?"
+    - "Validation: Do valid and invalid fields use non-colour indicators?"
+    - "Categories: Do tags include text, icon, pattern, or shape cues?"
+    - "Required fields: Is required status communicated beyond a coloured asterisk?"
+
+assistive_tech:
+  - id: windows-colour-filters
+    category: colour-filter
+    platforms: [Windows]
+    model: "Optionally remaps the display with Greyscale, Inverted, Greyscale inverted, Red-green, or Blue-yellow filters. Filters may improve differentiation but cannot add non-colour meaning."
+  - id: macos-colour-filters
+    category: colour-filter
+    platforms: [macOS]
+    model: "Offers Greyscale, Red/Green, Blue/Yellow, and colour-tint filters. They remap output but cannot add absent non-colour information."
+
+strategies:
+  - id: scanning-for-non-colour-cues
+    mechanisms: [visual-scanning-reduced-colour-discrimination]
+    behavior: "Looks for text, icons, patterns, shapes, position, borders, and underlines; cannot distinguish states when colour is the sole differing attribute."
+    reqs: "Every colour-encoded meaning needs at least one additional visual channel such as text, iconography, shape, pattern, border style, position, or size; colour may reinforce but must not be the sole means."
+  - id: seeking-explicit-labels-and-legends
+    mechanisms: [visual-scanning, hover-focus-tooltips]
+    behavior: "Seeks words, direct labels, legends, or tooltips for colour-coded charts, maps, status, and validation."
+    reqs: "Use direct labels, patterns, textures, or matching shapes beyond colour swatches; status indicators need text or icons with colour."
+  - id: identifying-interactive-elements-by-shape-and-affordance
+    mechanisms: [visual-scanning]
+    behavior: "Identifies buttons through borders or fill and links through underline, weight, or another non-colour treatment."
+    reqs: "Links in body text and buttons must remain distinguishable from surrounding text when colour differences are removed."
+  - id: interpreting-state-and-feedback-without-colour
+    mechanisms: [visual-scanning]
+    behavior: "Uses text, icon, weight, underline, border, or position to identify error, success, warning, active, and selected states."
+    reqs: "Explicit error or success text suffices; text colour or border colour alone does not. Icons, weight, underline, border style, position, or shape also distinguish state."
+
+user_variants:
+  - id: achromatopsia-complete-colour-blindness
+    behavior: "Typically uses no AT and perceives no colour, seeing greyscale. Reduced acuity and light sensitivity may coexist, but this FPS concerns only colour."
+    uses_at: []
+    uses_strategies: [scanning-for-non-colour-cues, seeking-explicit-labels-and-legends, interpreting-state-and-feedback-without-colour]
+    expects:
+      - "No information conveyed through colour alone."
+      - "Colour-coded content has text, icon, pattern, or shape alternatives."
+      - "Charts use patterns or direct labels, not a colour legend alone."
+      - "Error, success, and warning states include icons or text."
+      - "Links differ from body text without relying on colour."
+      - "Foreground and background elements have sufficient contrast."
+  - id: protanopia-or-deuteranopia
+    behavior: "The most common deficiencies affect approximately 8% of males. Red and green are indistinguishable, and reds, greens, browns, and oranges may be confused."
+    uses_at: [windows-colour-filters, macos-colour-filters]
+    uses_strategies: [scanning-for-non-colour-cues, interpreting-state-and-feedback-without-colour, identifying-interactive-elements-by-shape-and-affordance]
+    expects:
+      - "Red/green pairs are never the sole differentiator."
+      - "Error and success states include icons or text."
+      - "Charts do not rely on red-green differentiation without patterns."
+      - "Categorical palettes avoid red/green adjacency."
+      - "Status uses shape, icon, or text in addition to colour."
+  - id: tritanopia-blue-yellow-blind
+    behavior: "This rarer deficiency makes blue and yellow indistinguishable and may confuse blues, yellows, and greens, while reds and greens remain visible."
+    uses_at: [windows-colour-filters, macos-colour-filters]
+    uses_strategies: [scanning-for-non-colour-cues, seeking-explicit-labels-and-legends]
+    expects:
+      - "Blue/yellow pairs are not the sole differentiator."
+      - "Information links have underline or another non-colour treatment."
+      - "Warnings include icon or text beyond yellow."
+      - "Blue-yellow chart gradients have pattern or label alternatives."
+
+learning:
+  - id: first-visit
+    facts: "The user reads and sees layout normally; a well-designed interface is immediately usable, while a poor one reveals barriers on first encountering colour-only information."
+  - id: colour-is-contextual
+    facts: "The same colour can mean different things by context, so the meaning must be stated explicitly rather than encoded only by hue."
+  - id: colour-filters-help-but-do-not-solve
+    facts: "Filters may remap hues but cannot add semantics; if hue is the only state difference, the underlying colour-alone defect remains."
+  - id: dark-mode-and-theming
+    facts: "High-contrast or dark themes may reduce reliance on subtle colour differences, but colour-only badges and status dots remain inaccessible in every theme."
+
+heuristic_overrides:
+  1: "Status must not rely on colour alone. Pair colour-changing progress, loading, and confirmation with text, icons, numeric progress, or another cue."
+  2: "Red danger, green go, and yellow caution fail without supplementary cues. Categories, status icons, and chart legends need text, shape, pattern, or labels."
+  3: "Undo, cancel, and destructive controls must differ by text, icon, or position, not only red versus grey styling, or the user may choose the wrong action."
+  4: "Use non-colour status indicators consistently; switching from icon plus colour to colour alone removes information."
+  5: "Validation and constraints must not depend on colour. A red required asterisk is a problem only when colour is what distinguishes it from decorative asterisks; provide explicit required meaning."
+  6: "Colour must not be the sole category or label for tabs, teams, or navigation; otherwise recognition becomes recall."
+  7: "Keyboard shortcuts are unaffected, but colour-only filters, sort, and selection states hide instantly scannable state."
+  8: "Minimalism must not replace status text with colour dots. Retain text, meaningful shape, or icon cues."
+  9: "Identify errors without relying only on red text or borders. Add an icon, 'Error:' prefix, or another non-colour marker; success also needs a checkmark or explicit text beyond green."
+  10: "Instructions must identify controls by label, position, or icon rather than phrases such as 'green button' or 'shown in red'."

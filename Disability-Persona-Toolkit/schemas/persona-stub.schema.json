@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "persona-stub.schema.json",
+  "title": "Accessibility Persona Stub",
+  "description": "Minimal schema for stub persona files. Only metadata fields required. Use persona.schema.json for elaborated personas.",
+  "type": "object",
+  "required": ["clause", "title", "alias", "status", "fps_statement"],
+  "additionalProperties": false,
+  "properties": {
+    "clause": {
+      "type": "string",
+      "pattern": "^4\\.2\\.\\d+[a-z]?$",
+      "description": "EN 301 549 FPS clause number."
+    },
+    "title": {
+      "type": "string",
+      "description": "Official EN 301 549 FPS clause title."
+    },
+    "fps_statement": {
+      "type": "string",
+      "description": "The full EN 301 549 Functional Performance Statement text for this clause."
+    },
+    "alias": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Short kebab-case identifier."
+    },
+    "status": {
+      "const": "stub"
+    },
+    "device_context": {
+      "type": "string",
+      "enum": ["desktop", "mobile", "all"],
+      "description": "Default device context for all items in this persona."
+    },
+    "baseline_excludes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Baseline item IDs to omit from this persona."
+    }
+  }
+}
